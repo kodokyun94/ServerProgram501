@@ -73,6 +73,7 @@ public class CustomSecurityConfig {
                 .requestMatchers("/admin").hasRole("ADMIN")
                 // 위의 접근 제어 목록 외의 , 다른 어떤 요청이라도 반드시 인증이 되어야 접근이 된다.
                 .anyRequest().authenticated();
+//                .anyRequest().permitAll();
 
         //403 핸들러 적용하기.
         http.exceptionHandling(
@@ -95,8 +96,12 @@ public class CustomSecurityConfig {
                         .tokenValiditySeconds(60*60*24*30)
         );
 
-
-
+    // 캐시 설정 비활성화
+//        http.headers(
+//                cacheDisable -> cacheDisable.cacheControl(
+//                        disable -> disable.disable()
+//                )
+//        );
 
 
         return http.build();
