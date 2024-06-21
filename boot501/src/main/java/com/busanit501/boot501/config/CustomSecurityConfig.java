@@ -96,6 +96,11 @@ public class CustomSecurityConfig {
                         .tokenValiditySeconds(60*60*24*30)
         );
 
+        //카카오 로그인 API 설정
+        http.oauth2Login(
+                oauthLogin -> oauthLogin.loginPage("/member/login")
+        );
+
     // 캐시 설정 비활성화
 //        http.headers(
 //                cacheDisable -> cacheDisable.cacheControl(
