@@ -48,8 +48,8 @@
                                         <a class="nav-link" href="#">[[${user.mid}]]님 환영합니다.</a>
                                     </li>
                                     <li class="nav-item" th:if="${user} != null">
-                                        <div th:if="${user.uuid != null && user.fileName != null}">
-                                            <img style="width: 100px"
+                                        <div class="d-flex justify-content-center align-items-center" th:if="${user.uuid != null && user.fileName != null}">
+                                            <img class="profile-image mt-1 "
                                                  th:src="|/view/s_${user.uuid}_${user.fileName}|">
                                         </div>
                                     </li>
