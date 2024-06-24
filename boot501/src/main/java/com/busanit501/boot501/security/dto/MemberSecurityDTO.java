@@ -29,6 +29,8 @@ public class MemberSecurityDTO extends User implements OAuth2User {
     private String fileName;
     //소셜 로그인 정보
     private Map<String, Object> props;
+    // 소셜 프로필 이미지 만 뽑기
+    private String profileImageServer;
 
     //생성자
     public MemberSecurityDTO(
@@ -36,6 +38,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
             String username,String password,String email,
             boolean del, boolean social,
             String uuid, String fileName,
+            String profileImageServer,
             //GrantedAuthority 를 상속한 클래스는 아무나 올수 있다. 타입으로
             Collection<? extends GrantedAuthority> authorities
     ){
@@ -43,6 +46,7 @@ public class MemberSecurityDTO extends User implements OAuth2User {
       this.mid = username;
       this.mpw = password;
       this.email = email;
+      this.profileImageServer = profileImageServer;
       this.del = del;
       this.social = social;
       this.uuid = uuid;

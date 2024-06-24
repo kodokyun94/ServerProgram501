@@ -28,6 +28,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // 카카오 소셜 로그인시 , 로그인 로직 처리를 여기서 함.
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         // userRequest, 카카오 로그인 관련 정보가 들어가 있다.
@@ -46,20 +47,24 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         });
 
         String email = null;
+        String profileUrlThumbnail = null;
 
         switch (clientName) {
             case "kakao":
+                // 소셜 로그인 정보에서, 이메일만 추출.
                 email = getKakaoEmail(paramMap);
+                // 소셜 로그인 정보에서, 프로필 이미지 외부 미디어 서버 주소 추출.
+                profileUrlThumbnail = getKakaoProfile(paramMap);
                 break;
         }
 
         log.info("CustomOauth2UserService : email = " + email);
 
 
-        return generateDTO(email, paramMap);
+        return generateDTO(email,profileUrlThumbnail, paramMap);
     }
 
-    private MemberSecurityDTO generateDTO(String email, Map<String, Object> paramMap) {
+    private MemberSecurityDTO generateDTO(String email, String profile_img ,Map<String, Object> paramMap) {
 
         Optional<Member> result = memberRepository.findByEmail(email);
         //디비에 유저가 없다면 , 소셜로그인. (이메일포함)
@@ -71,6 +76,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
                     .mpw(passwordEncoder.encode("1111"))
                     .email(email)
                     .social(true)
+                    .profileImageServer(profile_img)
                     .build();
             //권한, 일반 USER
             member.addRole(MemberRole.USER);
@@ -79,7 +85,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             // entitty -> DTO
             MemberSecurityDTO memberSecurityDTO =
                     new MemberSecurityDTO(email, "1111", email,
-                            false, true, null, null, Arrays.asList(
+                            false, true, null, null, profile_img, Arrays.asList(
                             new SimpleGrantedAuthority("ROLE_USER")
                     ));
             memberSecurityDTO.setProps(paramMap);
@@ -97,6 +103,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
                             member.isSocial(),
                             member.getUuid(),
                             member.getFileName(),
+                            member.getProfileImageServer(),
                             member.getRoleSet().stream().map(
                                     memberRole -> new SimpleGrantedAuthority("ROLE_" + memberRole.name())
 
@@ -117,6 +124,19 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         String email = (String) accountMap.get("email");
         log.info("CustomOauth2UserService : email = " + email);
         return email;
+    }
+// paramMap : 소셜 로그인 정보가 다 들어가 있음.
+    private String getKakaoProfile(Map<String, Object> paramMap) {
+        log.info("CustomOauth2UserService : kakao = ");
+
+        Object value = paramMap.get("properties");
+        log.info("CustomOauth2UserService : properties = " + value);
+
+        LinkedHashMap propertiesMap = (LinkedHashMap) value;
+
+        String thumbnail_image = (String) propertiesMap.get("thumbnail_image");
+        log.info("CustomOauth2UserService : thumbnail_image = " + thumbnail_image);
+        return thumbnail_image;
     }
 
 }
