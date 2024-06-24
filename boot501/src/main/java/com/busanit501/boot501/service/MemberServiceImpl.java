@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -60,6 +61,30 @@ public class MemberServiceImpl implements MemberService {
         // 디비에 적용하기.
         memberRepository.save(member);
 
+    }
+
+    @Override
+    public void update(MemberJoinDTO memberJoinDTO) throws MidExistException {
+        //기존 아이디와 중복되는지 여부 확인
+        Optional<Member> result = memberRepository.findByEmail(memberJoinDTO.getMid());
+        Member member = result.orElseThrow();
+
+        // 중복이 아니니 회원 가입 처리하기.
+//         Member member = modelMapper.map(memberJoinDTO, Member.class);
+        log.info("memberJoinDTO = 4 MemberServiceImpl 프로필 이미지 있는 경우  " + memberJoinDTO);
+//        Member member = dtoToEntity(memberJoinDTO);
+        //패스워드는 현재 평문 -> 암호로 변경.
+        member.changePassword(passwordEncoder.encode(member.getMpw()));
+        // 역할 추가. 기본 USER
+        member.addRole(MemberRole.USER);
+
+
+        // 데이터 가 잘 알맞게 변경이 됐는지 여부,
+        log.info("updateMember: " + member);
+        log.info("updateMember: " + member.getRoleSet());
+
+        // 디비에 적용하기. -> 수정하기.
+        memberRepository.save(member);
     }
 
     @Override

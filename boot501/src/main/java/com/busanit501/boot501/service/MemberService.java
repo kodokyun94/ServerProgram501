@@ -12,6 +12,9 @@ public interface MemberService {
     }
     void join(MemberJoinDTO memberJoinDTO) throws MidExistException;
 
+    //회원 수정 재사용. join
+    void update(MemberJoinDTO memberJoinDTO) throws MidExistException;
+
     default Member dtoToEntity(MemberJoinDTO memberJoinDTO){
 
         Member member = Member.builder()

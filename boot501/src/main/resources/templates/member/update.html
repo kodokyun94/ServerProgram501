@@ -18,7 +18,11 @@
                 </div>
                 <div class="card-body">
                     <form id="registrationForm" action="/member/update" method="post">
-                        <div class="input-group mb-3">
+                        <div th:if="${user.social.toString().equals('true')} ">
+                        <h1>소셜 로그인 경우, 임시로 패스워드만 변경함</h1>
+                        </div>
+                        <div>소셜 로그인 여부 : [[${user.social}]]</div>
+                        <div class="input-group mb-3" th:if="${user.social.toString().equals('false')} ">
                             <span class="input-group-text">MID</span>
                             <input type="text" name="mid" class="form-control" th:value="${user.mid}" readonly>
                         </div>
@@ -28,14 +32,14 @@
                             <input type="password" name="mpw" class="form-control">
                         </div>
 
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3" th:if="${user.social.toString().equals('false')} ">
                             <span class="input-group-text">EMAIL</span>
                             <input type="email" name="email" class="form-control" th:value="${user.email}">
                         </div>
 
 <!--                        파일 첨부 하는 화면 넣기-->
 <!--                        글작성시, 레스트로 업로드 하는 방식 그대로 재사용해보기-->
-                        <div class="mb-3 input-group">
+                        <div class="mb-3 input-group" th:if="${user.social.toString().equals('false')} ">
 <!--                            <span class="input-group-text">첨부파일  </span>-->
                             <input class="form-control" type="file" id="profileImage" name="profileImage" accept="image/*">
                         </div>
@@ -210,7 +214,7 @@
         const form = document.getElementById('registrationForm');
         const formData = new FormData(form);
 
-        axios.post('/member/join', formData, {
+        axios.post('/member/update', formData, {
             //폼 방식에서, 이미지와 일반 문자열을 서버에 전달시
             // 전달 방식을 multipart/form-data 꼭~~~ 주의사항.
             headers: {
@@ -218,11 +222,11 @@
             }
         })
             .then(response => {
-                alert('회원가입이 완료되었습니다!');
+                alert('회원수정이 완료되었습니다!');
                 console.log(response.data);
             })
             .catch(error => {
-                alert('회원가입 중 오류가 발생했습니다.');
+                alert('회원수정 중 오류가 발생했습니다.');
                 console.error(error);
             });
     }

@@ -47,16 +47,19 @@ public class MemberController {
     //회원수정 폼
     @GetMapping("/update")
     public void updateGet(@AuthenticationPrincipal UserDetails user, Model model) {
-        log.info("joinGet====================");
+        log.info("updateGet====================");
+        log.info("updateGet : " + user);
         // 로그인 여부에 따라, 로그 아웃 표시하기.
         model.addAttribute("user", user);
     }
 
-    // 회원 수정 로직 처리
+    // 회원 수정 로직 처리, 1) 소셜 로그인 경우, 패스워드만 변경
+    // 2) 직접 로그인시, 패스워드, 이메일, 프로필 이미지도 변경.
     @PostMapping("/update")
     public String updatePost(MemberJoinDTO memberJoinDTO, @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
                            RedirectAttributes redirectAttributes) {
-        log.info("joinPost====================");
+        log.info("updatePost====================");
+        //현재 패스워드만 들어가 있음. 보이지 않게 mid, email 정보도 넘어옴.
         log.info("memberJoinDTO = " + memberJoinDTO);
 //        log.info("memberJoinDTO = 2 profileImage " + profileImage.getOriginalFilename());
 
@@ -75,16 +78,17 @@ public class MemberController {
         }
 
         log.info("memberJoinDTO = 3 프로필 이미지 있는 경우  " + memberJoinDTO);
-        // 회원 가입 로직 처리 없음.
+        // 회원 수정 로직 처리 없음.
         try {
-            memberService.join(memberJoinDTO);
+            //memberService.join(memberJoinDTO);
+            memberService.update(memberJoinDTO);
         } catch (MemberService.MidExistException e) {
             redirectAttributes.addFlashAttribute("error", "아이디 중복입니다");
-            return "redirect:/member/join";
+            return "redirect:/member/update";
         }
-        // 회원 가입 성공시
+        // 회원 수정 성공시
         redirectAttributes.addFlashAttribute("result","회원가입 성공");
-        return "redirect:/member/login";
+        return "redirect:/member/update";
     }
 
 
