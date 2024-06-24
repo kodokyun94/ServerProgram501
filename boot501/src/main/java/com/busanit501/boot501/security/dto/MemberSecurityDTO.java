@@ -9,15 +9,17 @@ package com.busanit501.boot501.security.dto;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Map;
 
 @Getter
 @Setter
 @ToString
 //@AllArgsConstructor
 // @AllArgsConstructor 대신에 권한도, 시큐리티에서 가져와서, 사용자정의해야하서.
-public class MemberSecurityDTO extends User {
+public class MemberSecurityDTO extends User implements OAuth2User {
     private String mid;
     private String mpw;
     private String email;
@@ -43,5 +45,15 @@ public class MemberSecurityDTO extends User {
       this.social = social;
       this.uuid = uuid;
       this.fileName = fileName;
+    }
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return Map.of();
+    }
+
+    @Override
+    public String getName() {
+        return "";
     }
 }
