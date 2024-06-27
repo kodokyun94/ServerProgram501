@@ -30,6 +30,8 @@ public interface MemberService {
                 .mid(memberJoinDTO.getMid())
                 .mpw(memberJoinDTO.getMpw())
                 .email(memberJoinDTO.getEmail())
+                .memberName(memberJoinDTO.getMemberName())
+                .address(memberJoinDTO.getAddress())
                 .uuid(memberJoinDTO.getUuid())
                 .fileName(memberJoinDTO.getFileName())
                 .build();

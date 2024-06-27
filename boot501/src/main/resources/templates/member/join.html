@@ -21,7 +21,8 @@
                         <div class="input-group mb-3">
                             <span class="input-group-text">MID</span>
                             <input type="text" name="mid" class="form-control" id="inputMid">
-                            <span class="input-group-text"><button class="btn btn-primary checkIdBtn" onclick="lookupId()">중복검사</button></span>
+<!--                            <span class="input-group-text"><button class="btn btn-primary checkIdBtn" onclick="lookupId()">중복검사</button></span>-->
+                            <span class="input-group-text"><button class="btn btn-primary checkIdBtn">중복검사</button></span>
                         </div>
 
                         <div class="input-group mb-3">
@@ -30,8 +31,22 @@
                         </div>
 
                         <div class="input-group mb-3">
+                            <span class="input-group-text">MPW확인</span>
+                            <input type="password" name="mpw2" class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
                             <span class="input-group-text">EMAIL</span>
                             <input type="email" name="email" class="form-control">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">이름</span>
+                            <input type="text" name="memberName" class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">주소</span>
+                            <input type="text" name="address" class="form-control">
                         </div>
 
 <!--                        파일 첨부 하는 화면 넣기-->
@@ -76,6 +91,11 @@
 </div>
 
 <script layout:fragment="javascript" th:inline="javascript">
+    document.querySelector(".checkIdBtn").addEventListener("click", function (e) {
+        e.preventDefault()
+        e.stopPropagation()
+        lookupId()
+    },false)
 
     //inputMid 중복검사,
     async function lookupId() {
